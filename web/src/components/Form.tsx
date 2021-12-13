@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from "react"
 
 export function Form() {
   const [name, setName] = useState<string>('')
@@ -20,5 +20,5 @@ export function Form() {
       />
       <button type="submit">Send</button>
     </form>
-  );
+  )
 }
