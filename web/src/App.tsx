@@ -1,9 +1,37 @@
+import { gql, useQuery } from '@apollo/client'
+
 import { Form } from './components/Form'
 import { Comment } from './components/Comment'
 
 import './styles.css'
 
+interface CommentData {
+  id: string
+  name: string
+  content: string
+}
+
+const GET_COMMENTS = gql`
+  query {
+    comments {
+      id
+      name
+      content
+    }
+  }
+`
+
 export function App() {
+  const { loading, error, data } = useQuery<CommentData[]>(GET_COMMENTS)
+
+  if(error) {
+    return (
+      <div id="app">
+        Error :/
+      </div>
+    )
+  }
+
   return (
     <div id="app">
       <main>
@@ -11,20 +39,20 @@ export function App() {
         
         <Form />
 
-        <section className="comments">
-          <Comment
-            id='1'
-            name='Paulo Reis'
-            description='Description ex'
-            handleDelete={(id) => (console.log(`${id} deleted`))}
-          />
-          <Comment
-            id='1'
-            name='Paulo Reis'
-            description='Description ex'
-            handleDelete={(id) => (console.log(`${id} deleted`))}
-          />
-        </section>
+        {loading 
+          ? 'Loading...' : (
+            <section className="comments">
+              {data?.map(comment => (
+                <Comment
+                  id={comment.id}
+                  name={comment.name}
+                  description={comment.content}
+                  handleDelete={(id) => (console.log(`${id} deleted`))}
+                />
+              ))}
+            </section>
+          )
+        }
       </main>
     </div>
   )
