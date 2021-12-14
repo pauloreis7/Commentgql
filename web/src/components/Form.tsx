@@ -12,11 +12,11 @@ interface CommentData {
 }
 
 const SAVE_COMMENT = gql`
-  mutation save($input: CommentInput) {
+  mutation save($input: CommentInput!) {
     saveComment(input: $input) {
       id
-      name: input.name
-      content: input.content
+      name
+      content
     }
   }
 `
