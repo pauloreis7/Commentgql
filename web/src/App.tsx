@@ -22,7 +22,11 @@ const GET_COMMENTS = gql`
 `
 
 export function App() {
-  const { loading, error, data } = useQuery<CommentData[]>(GET_COMMENTS)
+  const { loading, error, data, refetch } = useQuery<CommentData[]>(GET_COMMENTS)
+
+  function handleAddComment() {
+    refetch()
+  }
 
   if(error) {
     return (
@@ -37,7 +41,7 @@ export function App() {
       <main>
         <h1>Commentgql</h1>
         
-        <Form />
+        <Form refetchComments={handleAddComment} />
 
         {loading 
           ? 'Loading...' : (
