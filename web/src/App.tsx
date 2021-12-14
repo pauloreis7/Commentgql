@@ -1,4 +1,4 @@
-import { gql, useQuery } from '@apollo/client'
+import { gql, useQuery, useMutation } from '@apollo/client'
 
 import { Form } from './components/Form'
 import { Comment } from './components/Comment'
@@ -21,10 +21,26 @@ const GET_COMMENTS = gql`
   }
 `
 
+const DELETE_COMMENTS = gql`
+  mutation DeleteComment($id: String!) {
+    deleteComments(id: $id) {
+      id
+    }
+  }
+`
+
 export function App() {
   const { loading, error, data, refetch } = useQuery<CommentData[]>(GET_COMMENTS)
 
+  const [deleteComment] = useMutation(DELETE_COMMENTS)
+
   function handleAddComment() {
+    refetch()
+  }
+
+  async function handleDeleteComment(id: string) {
+    await deleteComment({ variables: { id } })
+
     refetch()
   }
 
@@ -48,10 +64,11 @@ export function App() {
             <section className="comments">
               {data?.map(comment => (
                 <Comment
+                  key={comment.id}
                   id={comment.id}
                   name={comment.name}
                   description={comment.content}
-                  handleDelete={(id) => (console.log(`${id} deleted`))}
+                  handleDelete={handleDeleteComment}
                 />
               ))}
             </section>
