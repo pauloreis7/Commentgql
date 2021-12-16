@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import './connection'
 
 import { ApolloServer } from 'apollo-server'
 import { buildSchema } from 'type-graphql'
@@ -7,7 +8,7 @@ import { CommentResolver } from './modules/comments/CommentResolver'
 
 async function bootstrap() {
   const schema = await buildSchema({
-    resolvers: [CommentResolver]
+    resolvers: [CommentResolver],
   })
 
   const server = new ApolloServer({ schema })
