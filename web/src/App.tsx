@@ -6,31 +6,31 @@ import { Comment } from './components/Comment'
 import './styles.css'
 
 interface CommentData {
-  id: string
-  name: string
-  content: string
+  getComments : {
+    _id: string
+    name: string
+    content: string
+  }[]
 }
 
 const GET_COMMENTS = gql`
   query {
-    comments {
-      id
-      name
+    getComments {
+      _id
+      name,
       content
     }
   }
 `
 
 const DELETE_COMMENTS = gql`
-  mutation DeleteComment($id: String!) {
-    deleteComments(id: $id) {
-      id
-    }
+  mutation ($id: String!) {
+    deleteComment(commentId: $id)
   }
 `
 
 export function App() {
-  const { loading, error, data, refetch } = useQuery<CommentData[]>(GET_COMMENTS)
+  const { loading, error, data, refetch } = useQuery<CommentData>(GET_COMMENTS)
 
   const [deleteComment] = useMutation(DELETE_COMMENTS)
 
@@ -62,10 +62,10 @@ export function App() {
         {loading 
           ? 'Loading...' : (
             <section className="comments">
-              {data?.map(comment => (
+              {data?.getComments.map(comment => (
                 <Comment
-                  key={comment.id}
-                  id={comment.id}
+                  key={comment._id}
+                  id={comment._id}
                   name={comment.name}
                   description={comment.content}
                   handleDelete={handleDeleteComment}

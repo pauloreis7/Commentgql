@@ -6,16 +6,14 @@ type FormProps = {
 }
 
 interface CommentData {
-  id: string
   name: string
   content: string
 }
 
 const SAVE_COMMENT = gql`
-  mutation save($input: CommentInput!) {
-    saveComment(input: $input) {
-      id
-      name
+  mutation ($commentInput: CommentInput!) {
+    addComment(commentInput: $commentInput) {
+      name,
       content
     }
   }
@@ -25,9 +23,10 @@ export function Form({ refetchComments }: FormProps) {
   const [name, setName] = useState<string>('')
   const [content, setContent] = useState<string>('')
 
-  const [addComment, { error }] = useMutation<CommentData>(SAVE_COMMENT, {
+  const [addComment, { error, loading }] = useMutation<CommentData>
+  (SAVE_COMMENT, {
     variables: {
-      input: {
+      commentInput: {
         name,
         content,
       },
@@ -62,6 +61,10 @@ export function Form({ refetchComments }: FormProps) {
 
       {error && (
         <span>Error: {error.message}</span>
+      )}
+
+      {loading && (
+        <span>Loading...</span>
       )}
 
       <button type="submit">Send</button>
